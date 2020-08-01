@@ -1,2 +1,13 @@
-# machine-learning-2020-1
-Atividades e trabalhos feitos para a disciplina de Aprendizado de Máquina, semestre 2020.1, Universidade Federal do Ceará - Campus Quixadá.
+# Aprendizado de Máquina
+Repositório que contém as atividades da disciplina de Aprendizado de Máquina.
+
+## Tópicos
+
+### Tópico 0: Atividades de Março - Antes da pandemia causada pela Covid-19
+
+- Atividade 1 - Regressão Linear Parte 1
+- Atividade 2 - Regressão Linear Parte 2
+
+### Tópico 1: 
+
+
