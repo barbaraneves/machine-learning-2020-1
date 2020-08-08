@@ -11,6 +11,6 @@ Repositório que contém as atividades da disciplina de Aprendizado de Máquina.
 ### Tópico 1: Trabalho sobre Regressão Linear Univariada, Multivariada e Regularizada
 
 - Utilização do método analítico e do gradiente descendente, como também do gradiente descendente estocástico.
-- Análises feitas em dois conjuntos de dados. 
+- Análises feitas em dois conjuntos de dados considerando diferentes atributos. 
 
 
