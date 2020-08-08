@@ -42,26 +42,34 @@ class LRGradientDescent():
         b_1 = 0
         
         n = len(X)  # Número de observações
+        cost = np.zeros(epochs)
         
         # Aplicando gradiente descendente
         for e in range(epochs):
             y_pred = b_0 + b_1 * X
+      
             # Calculando derivadas (gradientes)
             D_0 = (1/n) * sum(y - y_pred)
             D_1 = (1/n) * sum((y - y_pred) * X) 
             
             # Atualizando betas
             b_0 = b_0 + learning_rate * D_0  
-            b_1 = b_1 + learning_rate * D_1 
+            b_1 = b_1 + learning_rate * D_1
+            
+            cost[e] = metrics.MSE(y, y_pred)
             
         self.b_0 = b_0
         self.b_1 = b_1
+        self.cost = cost
   
     def predict(self, X):  
         return self.b_0 + self.b_1 * X
     
     def coef_(self):
         return [self.b_0, self.b_1]
+    
+    def cost_history(self): # Apenas para escolher uma época boa
+        return self.cost
     
 # c. Regressão Linear Multivariada - Método Analítico
 class MLRAnalyticalMethod():
@@ -91,8 +99,8 @@ class MLRGradientDescent():
         pass
 
     def fit(self, X, y, epochs, learning_rate):
-        n = X.shape[0] # Números de amostras
-        p = X.shape[1] # Número de variáveis (atributos)
+        n = X.shape[0] # Número de amostras
+        p = X.shape[1] # Número de variáveis (parâmetros)
         X_ = np.c_[np.ones(n), X]
         
         cost = np.zeros(epochs)
@@ -194,3 +202,41 @@ class CubicLN():
         return self.MLR.coef_()
 
 # h. Regressão Linear Regularizada Multivariada - Gradiente Descendente
+class LRRegularized():
+    def __init__(self): 
+        pass 
+
+    def fit(self, X, y, epochs, learning_rate): 
+        # Inicializando os coeficientes com 0
+        b_0 = 0
+        b_1 = 0
+        
+        n = len(X)  # Número de observações
+        cost = np.zeros(epochs)
+        
+        # Aplicando gradiente descendente
+        for e in range(epochs):
+            y_pred = b_0 + b_1 * X
+      
+            # Calculando derivadas (gradientes)
+            D_0 = (1/n) * sum(y - y_pred)
+            D_1 = (1/n) * sum((y - y_pred) * X) 
+            
+            # Atualizando betas
+            b_0 = b_0 + learning_rate * D_0  
+            b_1 = b_1 + learning_rate * D_1
+            
+            cost[e] = metrics.MSE(y, y_pred)
+            
+        self.b_0 = b_0
+        self.b_1 = b_1
+        self.cost = cost
+  
+    def predict(self, X):  
+        return self.b_0 + self.b_1 * X
+    
+    def coef_(self):
+        return [self.b_0, self.b_1]
+    
+    def cost_history(self): # Apenas para escolher uma época boa
+        return self.cost
