@@ -1,7 +1,12 @@
 import numpy as np 
 import pandas as pd
+import random
 
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+from sklearn.model_selection import train_test_split
+
+from modules import models
 
 #Funções do Trabalho 2
 def plot_confusion_matrix(y_true, y_pred, title, cmap=plt.cm.Reds):
@@ -63,6 +68,22 @@ def plot_boundaries(X, y, clf, title, cmap=plt.cm.YlOrRd):
 def accuracy_score(y_real, y_pred):
     return np.sum(y_pred == y_real)/y_real.shape[0]
 
+# Função extra do Trabalho 2
+def plot_loss_path(loss, title=None):
+    plt.figure(figsize=(10, 5))
+    
+    plt.rcParams.update({'font.size': 14})
+    plt.plot(range(1, len(loss)+1), loss, '-k', color='firebrick')
+    
+    plt.xlabel('Épocas', fontsize=14)
+    plt.ylabel('Loss', fontsize=14)
+    
+    if title is not None:
+        plt.title(title, fontsize=14)        
+        
+    plt.show()
+
+#Novas funções
 def plot_data(X, y, marker='o', cmap='YlOrRd', title=False):
     classes = [int(i) for i in np.unique(y)] 
     cm = plt.get_cmap(cmap)
@@ -80,3 +101,53 @@ def plot_data(X, y, marker='o', cmap='YlOrRd', title=False):
     plt.show()
     xlim = fig.gca().get_xlim() 
     ylim = fig.gca().get_ylim()
+
+# 3ª questão: K-fold
+def k_fold(X, y, k, method, seed=42):
+    idx = list(range(len(X)))
+    subset_size = round(len(X)/k)
+    metric_values = []
+    
+    random.Random(seed).shuffle(idx)
+    subsets = [idx[X:X + subset_size] for X in range(0, len(idx), subset_size)]
+    
+    for i in range(k):
+        X_ = X[subsets[i]]
+        y_ = y[subsets[i]]
+        
+        X_train, X_test, y_train, y_test = train_test_split(X_, y_, test_size=0.3, random_state=seed)
+        
+        method.fit(X_train, y_train)
+        y_pred = method.predict(X_test)
+
+        metric_values.append(accuracy_score(y_test, y_pred))
+
+    kfold_error = np.mean(metric_values)
+    
+    return kfold_error
+
+# Para análise do melhor alpha para a rede MLP
+def grid_search_mlp(X_train, X_test, y_train, y_test, units, epochs):
+    grid_search = np.logspace(-2, 0, 11) # Alphas
+    val_list = []
+    
+    for i in range(grid_search.shape[0]):
+        alpha = grid_search[i]
+
+        model = models.MLPClassifier(hidden_unit=units, epochs=epochs, alpha=alpha) 
+        model.fit(X_train, y_train)
+
+        y_pred = np.argmax(model.predict(X_test))
+
+        wrong_index_val = y_test != y_pred
+        val_list.append(np.mean(wrong_index_val))
+
+    best_alpha = grid_search[np.argmin(val_list)] 
+    print("[MLP] Melhor modelo encontrado: alpha={}".format(best_alpha))
+    
+    final_model = models.MLPClassifier(hidden_unit=units, epochs=epochs, alpha=best_alpha) 
+    final_model.fit(X_train, y_train)
+    
+    plot_loss_path(final_model.loss_history(), 'Função de loss ao longo das iterações')
+    
+    return best_alpha
