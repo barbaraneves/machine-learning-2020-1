@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 
-from modules import models
+import sys
+sys.path.insert(1, 'Trabalho 3/modules/')
+import models
 
 #Funções do Trabalho 2
 def plot_confusion_matrix(y_true, y_pred, title, cmap=plt.cm.Reds):
@@ -84,23 +86,20 @@ def plot_loss_path(loss, title=None):
     plt.show()
 
 #Novas funções
-def plot_data(X, y, marker='o', cmap='YlOrRd', title=False):
-    classes = [int(i) for i in np.unique(y)] 
-    cm = plt.get_cmap(cmap)
-    colors=[cm(1.*i/20) for i in range(20)]
+def plot_data(X, y, marker='o', title=False):
+    classes = np.array([int(i) for i in np.unique(y)]) 
+    colors = plt.cm.Set1(np.linspace(0, 0.9, classes.shape[0]))
     
     fig = plt.figure(figsize=(8, 6), )
     plt.rcParams.update({'font.size': 14})
     
     for i, class_ in enumerate(classes):       
-        plt.scatter(X[y == class_, 0], X[y == class_, 1], s=10*12, marker=marker, color=colors[(i+1)*9])
+        plt.scatter(X[y==class_, 0], X[y==class_, 1], s=100, marker=marker, color=colors[i])
     
     if title:
         plt.title(label=title)
         
     plt.show()
-    xlim = fig.gca().get_xlim() 
-    ylim = fig.gca().get_ylim()
 
 # 3ª questão: K-fold
 def k_fold(X, y, k, method, seed=42):
